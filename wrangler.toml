@@ -1,0 +1,8 @@
+name = "email"
+main = "src/index.js"
+compatibility_date = "2023-05-16"
+
+workers_dev = false
+
+# Email bindings aren't available in workers.toml yet
+# so they are bound directly in the Cloudflare dashboard
