@@ -2,6 +2,7 @@ name = "email"
 main = "src/index.js"
 compatibility_date = "2023-05-16"
 
+account_id = "fbd3f1ae1f2ee34602e2d2aae9ef7df6"
 workers_dev = false
 
 # Email bindings aren't available in workers.toml yet
