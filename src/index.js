@@ -1,9 +1,3 @@
-export default {
-  async email(message, env, ctx) {
-    return await handleEmail(message, env, ctx);
-  },
-};
-
 async function handleEmail(message, env, ctx) {
 	const temp = JSON.parse(await env.config.get("mawer.uk"));
 	const forwardAddresses = temp.routes;
@@ -23,3 +17,7 @@ async function handleEmail(message, env, ctx) {
 	  message.setReject("550 5.1.1 User unknown");
 	  return;
 }
+
+export default {
+	email: handleEmail,
+};
