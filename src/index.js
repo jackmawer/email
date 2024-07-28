@@ -2,15 +2,12 @@ export default {
   async email(message, env, ctx) {
     return await handleEmail(message, env, ctx);
   },
-
-  async fetch(request, env, ctx) {
-    return new Response("Hello World!");
-  },
 };
 
 async function handleEmail(message, env, ctx) {
-	const forwardAddresses = JSON.parse(env.FORWARD_ADDRESSES); // e.g. { "jack": "jack@example.com" }
-	  const catchAll = env.CATCH_ALL; // e.g. "jack@example.com"
+	const temp = JSON.parse(await env.CONFIG.get("mawer.uk"));
+	const forwardAddresses = temp.routes;
+	const catchAll = temp.fallback;
 	  
 	for (const [addr, dest] of Object.entries(forwardAddresses)) {
 		if (message.to.startsWith(addr)) {

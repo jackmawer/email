@@ -1,8 +1,11 @@
 name = "email"
 main = "src/index.js"
 compatibility_date = "2023-05-16"
-usage_model = "standard"
+usage_model = "bundled"
 env = { }
+kv_namespaces = [
+    { binding = "config", id = "3b7b97b9fcc142f2ba782e471d1dc417" }
+]
 
 [triggers]
 crons = [ ]
