@@ -5,7 +5,7 @@ export default {
 };
 
 async function handleEmail(message, env, ctx) {
-	const temp = JSON.parse(await env.CONFIG.get("mawer.uk"));
+	const temp = JSON.parse(await env.config.get("mawer.uk"));
 	const forwardAddresses = temp.routes;
 	const catchAll = temp.fallback;
 	  
