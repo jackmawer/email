@@ -16,7 +16,7 @@ async function handleEmail(message, env, ctx) {
 
 		// Check if the username is in the routes.
 		if (username in routes) {
-			for (let forwardingAddr of (routes[username].isArray() ? routes[username] : routes[username].flat())) {
+			for (let forwardingAddr of (Array.isArray(routes[username]) ? routes[username] : routes[username].flat())) {
 				await message.forward(forwardingAddr);
 			}
 		} else {
