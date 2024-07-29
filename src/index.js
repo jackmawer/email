@@ -6,7 +6,10 @@ async function handleEmail(message, env, ctx) {
 	const domains = (Array.isArray(configMeta.keys) ? configMeta.keys : []).map(key => key.name);
 	if (domains.includes(incomingDomain)) {
 		const domainConfig = JSON.parse(await env.config.get(incomingDomain));
-
+		
+		// Split the username part by dot or plus.
+		const username = message.to.split("@")[0].split(/\.|\+/)[0];
+		
 		// Check if the username is in the routes.
 		if (username in domainConfig.routes) {
 			return handleEmailSend(message, domainConfig.routes[username])
@@ -16,9 +19,7 @@ async function handleEmail(message, env, ctx) {
 		if (domainConfig.fallback) {
 			return await message.forward(domainConfig.fallback);
 		}
-		
-		// Split the username part by dot or plus.
-		const username = message.to.split("@")[0].split(/\.|\+/)[0];
+
 		console.warn(`Got email for user ${username} of domain ${incomingDomain} but no routes configured for that user and no fallback address available.`);
 		message.setReject("550 5.1.1 User unknown");
 		return;
