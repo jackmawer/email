@@ -12,7 +12,7 @@ async function handleEmail(message, env, ctx) {
 		const fallback = domainConfig.fallback;
 
 		// Split the username part by dot or plus.
-		const username = message.to.split("@")[0].split(/\.|\+/)[0];
+		const username = message.to.split("@")[0].split(/\.|\+/)[0].toLowerCase();
 
 		// Check if the username is in the routes.
 		if (username in routes) {
