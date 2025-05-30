@@ -1,3 +1,6 @@
+import { EmailMessage } from "cloudflare:email";
+import { createMimeMessage } from "mimetext";
+
 async function handleEmail(message, env, ctx) {
 	const configMeta = await env.config.list();
 	const domains = configMeta.keys.map(key => key.name);
@@ -15,9 +18,13 @@ async function handleEmail(message, env, ctx) {
 		const username = message.to.split("@")[0].split(/\.|\+/)[0].toLowerCase();
 
 		// Check if the username is in the routes.
-		if (username in routes) {
+		if (username in routes??{}) {
 			for (let forwardingAddr of (Array.isArray(routes[username]) ? routes[username] : [routes[username]])) {
-				await message.forward(forwardingAddr);
+				try {
+					await message.forward(forwardingAddr);
+				} catch (err) {
+					await handleForwardErr(err, forwardingAddr, message.from);
+				}
 			}
 		} else {
 			// No route for this user, check if there is a fallback.
@@ -40,6 +47,23 @@ async function handleEmail(message, env, ctx) {
 			message.setReject("550 5.1.1 User unknown");
 		}
 	}
+}
+
+async function handleForwardErr(err, addr, from) {
+	const msg = createMimeMessage();
+	msg.setSender({ name: "CF Forwarding Errors", addr: "postmaster@mawer.uk"});
+	msg.setRecipient(addr);
+	msg.setSubject("Email forwarding error - " + from);
+	msg.addMessage({
+		contentType: "text/plain",
+		data: `There was an error forwarding an email from ${from} to ${addr}.\n\nError: ${err.message}\n\nPlease check the configuration for this address.`,
+	});
+	const message = new EmailMessage(
+		"postmaster@mawer.uk",
+		addr,
+		msg.asRaw()
+	);
+	await env.MAILER.send(message); // This might also fail, but I'm not handling that for now.
 }
 
 export default {

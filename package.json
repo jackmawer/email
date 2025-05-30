@@ -10,5 +10,8 @@
     "dev": "wrangler dev",
     "deploy": "wrangler publish",
     "test": "jest"
+  },
+  "dependencies": {
+    "mimetext": "^3.0.27"
   }
 }
