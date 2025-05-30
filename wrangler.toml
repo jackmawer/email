@@ -1,6 +1,7 @@
 name = "email"
 main = "src/index.js"
-compatibility_date = "2023-05-16"
+compatibility_flags = [ "nodejs_compat" ]
+compatibility_date = "2024-09-23"
 usage_model = "bundled"
 env = { }
 kv_namespaces = [

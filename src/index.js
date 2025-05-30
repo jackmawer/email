@@ -23,14 +23,24 @@ async function handleEmail(message, env, ctx) {
 				try {
 					await message.forward(forwardingAddr);
 				} catch (err) {
+					console.error(`Error forwarding email for user ${username} to ${forwardingAddr}:`, err);
 					await handleForwardErr(err, forwardingAddr, message.from);
+					// Send a rejection message indicating a temporary failure
+					message.setReject(`450 4.4.1 No answer from host`);
 				}
 			}
 		} else {
 			// No route for this user, check if there is a fallback.
 			if (fallback) {
 				//TODO: should we also try the global fallback in this case?
-				await message.forward(fallback);
+				try {
+					await message.forward(fallback);
+				} catch (err) {
+					console.error(`Error forwarding email for user ${username} to ${forwardingAddr}:`, err);
+					await handleForwardErr(err, fallback, message.from);
+					// Send a rejection message indicating a temporary failure
+					message.setReject(`450 4.4.1 No answer from host`);
+				}
 			} else {
 				console.warn(`Got email for user ${username} of domain ${incomingDomain} but no routes configured for that user and no fallback address available.`);
 				message.setReject("550 5.1.1 User unknown");
