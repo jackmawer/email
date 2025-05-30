@@ -8,8 +8,12 @@ kv_namespaces = [
     { binding = "config", id = "3b7b97b9fcc142f2ba782e471d1dc417" }
 ]
 send_email = [
-    {name="mailer"}
+    {type = "send_email", name="MAILER"}
 ]
 
 [triggers]
 crons = [ ]
+
+[observability]
+enabled = true
+head_sampling_rate = 1
