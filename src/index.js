@@ -24,7 +24,7 @@ async function handleEmail(message, env, ctx) {
 					await message.forward(forwardingAddr);
 				} catch (err) {
 					console.error(`Error forwarding email for user ${username} to ${forwardingAddr}:`, err);
-					await handleForwardErr(err, forwardingAddr, message.from);
+					await handleForwardErr(err, forwardingAddr, message.from, env);
 					// Send a rejection message indicating a temporary failure
 					message.setReject(`450 4.4.1 No answer from host`);
 				}
@@ -37,7 +37,7 @@ async function handleEmail(message, env, ctx) {
 					await message.forward(fallback);
 				} catch (err) {
 					console.error(`Error forwarding email for user ${username} to ${forwardingAddr}:`, err);
-					await handleForwardErr(err, fallback, message.from);
+					await handleForwardErr(err, fallback, message.from, env);
 					// Send a rejection message indicating a temporary failure
 					message.setReject(`450 4.4.1 No answer from host`);
 				}
@@ -59,7 +59,7 @@ async function handleEmail(message, env, ctx) {
 	}
 }
 
-async function handleForwardErr(err, addr, from) {
+async function handleForwardErr(err, addr, from, env) {
 	const msg = createMimeMessage();
 	msg.setSender({ name: "CF Forwarding Errors", addr: "postmaster@mawer.uk"});
 	msg.setRecipient(addr);
